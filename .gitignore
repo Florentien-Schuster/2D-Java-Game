@@ -1,0 +1,13 @@
+### IntelliJ IDEA ###
+.idea/
+*.iml
+
+# Build
+/out/
+target/
+
+# Java
+*.class
+
+# sonstiges
+.DS_Store

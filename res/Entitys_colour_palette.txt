@@ -1,5 +1,16 @@
+OC:
 Hair: 1: #5e423a 2: #472f28
 Skin: 1: #e3bc9a 2: #c5ab94
 Clothes: 1: #0d0d0d 2:#221f1f 3:#221c1c
 Hands & Feet: #b6a79a
 Eyes: #264f3d
+
+Blue enemy:
+
+Blob:
+Green shadow: #33891e
+Base: #30bb0f
+Teeth: #475e1e
+Mouth: #5f8719
+Eyes: #32ff00
+

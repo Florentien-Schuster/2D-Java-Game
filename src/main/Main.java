@@ -4,7 +4,6 @@ import main.GamePanel;
 
 import javax.swing.*;
 
-// TODO: implement sprites & animation for player
 
 public class Main {
     public static void main(String[] args) {

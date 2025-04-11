@@ -1,0 +1,41 @@
+Grass:
+	#53ff00
+	#4dc314
+	#4db01d
+	#378d0e
+
+	Ruins:
+	#acacac
+	#d9d9d9
+	#878787
+
+	Withered:
+	#2a6b0b
+	#1c4508
+
+	Flower field:
+	Green: #4af906
+
+	Red:
+	#bd1414
+	#9c2020
+	#964040
+
+	Blue:
+	#00ffff
+	#208ba9
+	#206f85
+	#06c3f9
+
+Sand:
+	#bad255
+	#b0c168
+	#97a94a
+
+Water:
+
+Deep:
+
+Flowing:
+
+Still:

@@ -1,0 +1,31 @@
+Legendary ice sword:
+
+	Leather:
+	#3c2f05
+	#201903
+
+	Gold:
+	#b4bf56
+	#888e50
+
+	Blade:
+	#1e76ca
+	#4a8dcc
+
+	Aura:
+	#00f4ff
+	#00ffc7
+
+Normal sword:
+
+	Leather:
+	#3e3005
+	#201903
+
+	Bronze:
+	#ddcc99
+	#aba38b
+
+	Blade:
+	#878787
+	#656565

@@ -8,92 +8,151 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
-// TODO: complete implement other Tiles
 
 public class TileManager {
     GamePanel gp;
     Tile[] tile;
-    int mapTileNum[][];
+    int [][] mapTileNum;
 
     public TileManager(GamePanel gp){
         this.gp = gp;
 
-        tile = new Tile[10];
-        mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
+        tile = new Tile[30];
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
         // Test map 1
-        loadMap("/maps/map1.txt");
+        loadMap("/background/maps/map1.txt");
     }
-    /* tile [0] = grass, tile [1] = grass 2, tile[2] = riverbank, tile[3] = flowing water, tile[4] = grass ruins */
+    /* tile [0] = grass, [1] = grass ruins , [2] = riverbank, [3] = flowing water, [4] = grass ruins 2, [5] = water bridge , [6] = cave, [7] = cave entrance, [8] = outline cave, [9] = peak cave
+    * [10] = flower field blue , [11] = flower field blue 2, [12] = flower field red , [13] = flower field red 2, [14] = spawnpoint, [15] = riverbank topright to downleft, [16] = riverbank topleft to topright, [17] = city house 2
+    * [18] = forest tree , [19] = forest tree 2, [20] = spawn tree stem, [21] = spawn tree crown, [22] = spawn tree roots , [23] = spawn tree hanging flower*/
+
     public void getTileImage() {
         try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/2D_game_grass.png"));
+            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/grass.png"));
 
             tile[1] = new Tile();
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/2D_game_grass_2.png"));
 
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/2D_game_flowing_water_riverbank.png"));
+            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/left/riverbank_straight.png"));
 
             tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/2D_game_flowing_water.png"));
+            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/plain_water_2.png"));
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/2D_game_grass_ruins.png"));
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/grass_ruins.png"));
+
+            tile[5] = new Tile();
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[6] = new Tile();
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[7] = new Tile();
+            tile[7].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[8] = new Tile();
+            tile[8].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[9] = new Tile();
+            tile[9].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[10] = new Tile();
+            tile[10].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/flower_field_blue.png"));
+
+            tile[11] = new Tile();
+            tile[11].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[12] = new Tile();
+            tile[12].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/flower_field_red.png"));
+
+            tile[13] = new Tile();
+            tile[13].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[14] = new Tile();
+            tile[14].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+
+            tile[15] = new Tile();
+            tile[15].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/left/riverbank_topright_to_downleft.png"));
+
+            tile[16] = new Tile();
+            tile[16].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/left/riverbank_topleft_to_downright.png"));
+
+            tile[17] = new Tile();
+            tile[17].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/right/riverbank_topleft_to_downright.png"));
+
+            tile[18] = new Tile();
+            tile[18].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/right/riverbank_straight.png"));
+
+            tile[19] = new Tile();
+            tile[19].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/right/riverbank_topright_to_downleft.png"));
+
+            tile[20] = new Tile();
+            tile[20].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/down/riverbank_straight.png"));
+
+            //tile[21] = new Tile();
+            //tile[21].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/top/"));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public void loadMap(String mapPath){
-        try{
+        try {
             InputStream is = getClass().getResourceAsStream(mapPath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int col = 0;
             int row = 0;
 
-            while(col < gp.maxScreenCol && row < gp.maxScreenRow){
-                String line = br.readLine();
+            while(col < gp.maxWorldCol && row < gp.maxWorldRow){
+                String line = br.readLine().trim();
 
-                while(col < gp.maxScreenCol) {
-                    String numbers[] = line.split(" ");
+                while(col < gp.maxWorldCol) {
+                    String [] numbers = line.split(" ");
 
                     int num = Integer.parseInt(numbers[col]);
 
                     mapTileNum[col][row] = num;
+                    //System.out.println(Arrays.toString(new int[]{mapTileNum[col][row]}));
+                    //System.out.println(col);
                     col++;
                 }
-                if(col == gp.maxScreenCol){
+                if(col == gp.maxWorldCol){
                     col = 0;
                     row++;
                 }
             }
             br.close();
         }catch(Exception e){
-
+            e.printStackTrace();
         }
     }
     public void draw(Graphics2D g2){
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
+        int worldCol = 0;
+        int worldRow = 0;
 
-        while(col < gp.maxScreenCol && row < gp.maxScreenRow){
+        while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow){
 
-            int tileNum = mapTileNum[col][row];
-            g2.drawImage(tile[tileNum].image,x,y,gp.tileSize,gp.tileSize,null);
-            col++;
-            x += gp.tileSize;
-            if(col == gp.maxScreenCol){
-                col = 0;
-                x = 0;
-                row ++;
-                y += gp.tileSize;
+            int tileNum = mapTileNum[worldCol][worldRow];
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize;
+            int screenX = worldX - gp.player.worldX + gp.player.screenX;
+            int screenY = worldY - gp.player.worldY + gp.player.screenY;
+
+            g2.drawImage(tile[tileNum].image,screenX,screenY,gp.tileSize,gp.tileSize,null);
+            worldCol++;
+
+            if(worldCol == gp.maxWorldCol){
+                worldCol = 0;
+
+                worldRow ++;
+
             }
         }
     }

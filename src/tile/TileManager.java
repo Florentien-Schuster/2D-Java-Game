@@ -13,10 +13,12 @@ import java.util.Arrays;
 
 public class TileManager {
     GamePanel gp;
-    Tile[] tile;
-    int [][] mapTileNum;
+    public static int tileLoadNum = 1;
+    public static int tileCounter = 0;
+    public Tile[] tile;
+    public int[][] mapTileNum;
 
-    public TileManager(GamePanel gp){
+    public TileManager(GamePanel gp) {
         this.gp = gp;
 
         tile = new Tile[30];
@@ -26,9 +28,10 @@ public class TileManager {
         // Test map 1
         loadMap("/background/maps/map1.txt");
     }
-    /* tile [0] = grass, [1] = grass ruins , [2] = riverbank, [3] = flowing water, [4] = grass ruins 2, [5] = water bridge , [6] = cave, [7] = cave entrance, [8] = outline cave, [9] = peak cave
-    * [10] = flower field blue , [11] = flower field blue 2, [12] = flower field red , [13] = flower field red 2, [14] = spawnpoint, [15] = riverbank topright to downleft, [16] = riverbank topleft to topright, [17] = city house 2
-    * [18] = forest tree , [19] = forest tree 2, [20] = spawn tree stem, [21] = spawn tree crown, [22] = spawn tree roots , [23] = spawn tree hanging flower*/
+    /* tile [0] = grass, [1] = grass ruins , [2] = riverbank, [3] = flowing water, [4] = flowing water 2, [5] = water bridge , [6] = cave, [7] = cave entrance, [8] = outline cave, [9] = peak cave
+     * [10] = flower field blue , [11] = flower field blue 2, [12] = flower field red , [13] = flower field red 2, [14] = spawnpoint, [15] = riverbank topright to downleft left, [16] = riverbank topleft to topright left, [17] = riverbank topleft to downright right
+     * [18] = riverbank straight right , [19] = riverbank topright to downleft right, [20] = riverbank straight down, [21] = grass ruins, [22] = spawn tree roots , [23] = spawn tree hanging flower
+     * [24] = spawn tree stem, [25] = forest tree, [26] = forest tree, [27] = spawn tree crown*/
 
     public void getTileImage() {
         try {
@@ -43,9 +46,11 @@ public class TileManager {
 
             tile[3] = new Tile();
             tile[3].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/plain_water_2.png"));
+            tile[3].collision = true;
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/grass_ruins.png"));
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/plain_water.png"));
+            tile[4].collision = true;
 
             tile[5] = new Tile();
             tile[5].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
@@ -95,14 +100,16 @@ public class TileManager {
             tile[20] = new Tile();
             tile[20].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/down/riverbank_straight.png"));
 
-            //tile[21] = new Tile();
-            //tile[21].image = ImageIO.read(getClass().getResourceAsStream("/background/water/flowing_water/top/"));
+            tile[21] = new Tile();
+            tile[21].image = ImageIO.read(getClass().getResourceAsStream("/background/grass/grass_ruins_withered.png"));
+            tile[21].collision = true;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void loadMap(String mapPath){
+
+    public void loadMap(String mapPath) {
         try {
             InputStream is = getClass().getResourceAsStream(mapPath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -110,11 +117,12 @@ public class TileManager {
             int col = 0;
             int row = 0;
 
-            while(col < gp.maxWorldCol && row < gp.maxWorldRow){
+
+            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
                 String line = br.readLine().trim();
 
-                while(col < gp.maxWorldCol) {
-                    String [] numbers = line.split(" ");
+                while (col < gp.maxWorldCol) {
+                    String[] numbers = line.split(" ");
 
                     int num = Integer.parseInt(numbers[col]);
 
@@ -123,21 +131,25 @@ public class TileManager {
                     //System.out.println(col);
                     col++;
                 }
-                if(col == gp.maxWorldCol){
+                if (col == gp.maxWorldCol) {
                     col = 0;
                     row++;
                 }
             }
             br.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void draw(Graphics2D g2){
+
+    public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
 
-        while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow){
+        tileAnimationLoader(50);
+
+
+        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
             int tileNum = mapTileNum[worldCol][worldRow];
             int worldX = worldCol * gp.tileSize;
@@ -145,15 +157,37 @@ public class TileManager {
             int screenX = worldX - gp.player.worldX + gp.player.screenX;
             int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-            g2.drawImage(tile[tileNum].image,screenX,screenY,gp.tileSize,gp.tileSize,null);
+
+            if (tileNum == 3) {
+                if (tileLoadNum == 1) {
+                    g2.drawImage(tile[4].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                }
+                if (tileLoadNum == 2) {
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                }
+            } else {
+                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            }
             worldCol++;
 
-            if(worldCol == gp.maxWorldCol){
+            if (worldCol == gp.maxWorldCol) {
                 worldCol = 0;
 
-                worldRow ++;
+                worldRow++;
 
             }
+        }
+    }
+
+    public static void tileAnimationLoader(int counter) {
+        tileCounter++;
+        if (tileCounter > counter) {
+            if (tileLoadNum == 1) {
+                tileLoadNum = 2;
+            } else if (tileLoadNum == 2) {
+                tileLoadNum = 1;
+            }
+            tileCounter = 0;
         }
     }
 }

@@ -4,6 +4,7 @@ import main.GamePanel;
 
 import javax.swing.*;
 
+// TODO: improve rendering to reduce lag
 
 public class Main {
     public static void main(String[] args) {

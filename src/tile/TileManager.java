@@ -39,8 +39,8 @@ public class TileManager {
             TileCollection.woodBridgeTiles();
             TileCollection.caveTiles();
 
-            tile[36] = new Tile();
-            tile[36].image = ImageIO.read(getClass().getResourceAsStream("/background/placeholder.png"));
+            tile[38] = new Tile(); // 36
+            tile[38].image = ImageIO.read(getClass().getResourceAsStream("/test_1.png"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +95,7 @@ public class TileManager {
             screenX = worldX - gp.player.worldX + gp.player.screenX;
             screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-            riverAnimations(g2);
+            animations(g2);
 
             worldCol++;
 
@@ -121,7 +121,8 @@ public class TileManager {
 
         }
     }
-    public void riverAnimations(Graphics2D g2){
+    //TODO: Improve tile organisation
+    public void animations(Graphics2D g2){
         if (tileNum == 3) {
             switch(tileLoadNum){
                 case 1:
@@ -173,5 +174,8 @@ public class TileManager {
         } else {
             g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
         }
+    }
+    public void riverAnimations(Graphics2D g2){
+
     }
 }

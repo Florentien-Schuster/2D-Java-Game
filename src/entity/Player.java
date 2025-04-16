@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+// TODO: correct player speed & implement sprites/animations for diagonal movement
+
 public class Player extends Entity{
 
     GamePanel gp;
@@ -62,13 +64,21 @@ public class Player extends Entity{
 
     public void update(){
         if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
-            if (keyH.upPressed){
+            if(keyH.upPressed & keyH.rightPressed) {
+                direction = "up_right";
+            }else if(keyH.upPressed & keyH.leftPressed) {
+                direction = "up_left";
+            }else if(keyH.downPressed & keyH.rightPressed) {
+                direction = "down_right";
+            }else if(keyH.downPressed & keyH.leftPressed){
+                direction = "down_left";
+            }else if (keyH.upPressed){
                 direction = "up";
             }else if(keyH.downPressed){
                 direction = "down";
             }else if(keyH.leftPressed){
                 direction = "left";
-            }else if(keyH.rightPressed){
+            }else if(keyH.rightPressed) {
                 direction = "right";
             }
             collisionOn = false;
@@ -87,6 +97,22 @@ public class Player extends Entity{
                         break;
                     case"right":
                         worldX += speed;
+                        break;
+                    case"up_right":
+                        worldY -= speed;
+                        worldX += speed;
+                        break;
+                    case"up_left":
+                        worldY -= speed;
+                        worldX -= speed;
+                        break;
+                    case"down_right":
+                        worldY += speed;
+                        worldX += speed;
+                        break;
+                    case"down_left":
+                        worldY +=speed;
+                        worldX -= speed;
                         break;
                 }
             }

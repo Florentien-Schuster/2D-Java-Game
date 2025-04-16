@@ -5,6 +5,7 @@ import main.GamePanel;
 import javax.swing.*;
 
 // TODO: improve rendering to reduce lag
+// Idee: Lade nur die Tiles in einem best. Umkreis um den Spieler herum (beachte Bildgröße zwecks Rand)
 
 public class Main {
     public static void main(String[] args) {

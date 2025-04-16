@@ -94,8 +94,11 @@ public class TileManager {
             int worldY = worldRow * gp.tileSize;
             screenX = worldX - gp.player.worldX + gp.player.screenX;
             screenY = worldY - gp.player.worldY + gp.player.screenY;
+            if(renderingImprovementCheck(worldX,worldY)){
+                animations(g2);
+            }
 
-            animations(g2);
+            //animations(g2);
 
             worldCol++;
 
@@ -107,6 +110,15 @@ public class TileManager {
             }
         }
     }
+
+    public boolean renderingImprovementCheck(int worldX, int worldY){
+        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+                worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+            return true;
+        }else{
+            return false;
+        }
+        }
 
     public static void tileAnimationLoader(int counter) {
         tileCounter++;

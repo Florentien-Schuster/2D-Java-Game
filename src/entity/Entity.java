@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public class Entity {
     public int worldX,worldY;
     public int speed;
+    public float diagonalSpeed;
 
     public BufferedImage up1, up2, down1, down2, left1, left2,right1 ,right2;
     public BufferedImage idle_test, idle_down1, idle_down2, idle_up1, idle_up2, idle_left1, idle_left2, idle_right1, idle_right2;

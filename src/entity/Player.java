@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-// TODO: correct player speed & implement sprites/animations for diagonal movement
+// TODO: implement sprites/animations for diagonal movement
 
 public class Player extends Entity{
 
@@ -34,7 +34,8 @@ public class Player extends Entity{
     public void setDefaultValues(){
         worldX = gp.tileSize * 23; // 8
         worldY = gp.tileSize * 23; // 6
-        speed = 4;
+        speed = 5;
+        diagonalSpeed = (float) (speed/Math.sqrt(2));
         direction = "down";
     }
 
@@ -99,20 +100,20 @@ public class Player extends Entity{
                         worldX += speed;
                         break;
                     case"up_right":
-                        worldY -= speed;
-                        worldX += speed;
+                        worldY -= diagonalSpeed;
+                        worldX += diagonalSpeed;
                         break;
                     case"up_left":
-                        worldY -= speed;
-                        worldX -= speed;
+                        worldY -= diagonalSpeed;
+                        worldX -= diagonalSpeed;
                         break;
                     case"down_right":
-                        worldY += speed;
-                        worldX += speed;
+                        worldY += diagonalSpeed;
+                        worldX += diagonalSpeed;
                         break;
                     case"down_left":
-                        worldY +=speed;
-                        worldX -= speed;
+                        worldY += diagonalSpeed;
+                        worldX -= diagonalSpeed;
                         break;
                 }
             }

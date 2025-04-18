@@ -1,7 +1,10 @@
 package entity;
 
+import weapons.Weapon;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Entity {
     public int worldX,worldY;
@@ -15,5 +18,20 @@ public class Entity {
     static public int spriteNum = 1;
     public Rectangle solidArea; // (x,y,width,height)
     public boolean collisionOn = false;
+    public int healthPoints;
+    public int mana;
+    public int rage;
+    public int stamina;
+    public int playerDamage;
+    public int playerMagicDamage;
+    public int playerPhysicalDamage;
+    public int enemyDamage;
+    public double attackSpeed;
+    public double physicalDefense;
+    public double magicalDefense;
+    //public List<Weapon> equippedWeapons = new ArrayList<>(); // max 2 weapons equipped
+    /* Idea: weaponcombination is "class" like ranger etc and skills depend on combination */
+
+
 
 }

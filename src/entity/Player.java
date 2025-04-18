@@ -17,6 +17,12 @@ public class Player extends Entity{
 
     public final int screenX;
     public final int screenY;
+    int normalSpeed = 5;
+    int rollingSpeed = 15;
+    int speed = normalSpeed;
+    boolean isRolling = false;
+    int rollDuration = 20;
+    int rollCounter = 0;
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -34,7 +40,7 @@ public class Player extends Entity{
     public void setDefaultValues(){
         worldX = gp.tileSize * 23; // 8
         worldY = gp.tileSize * 23; // 6
-        speed = 5;
+        //speed = normalSpeed;
         diagonalSpeed = (float) (speed/Math.sqrt(2));
         direction = "down";
     }
@@ -64,6 +70,17 @@ public class Player extends Entity{
     }
 
     public void update(){
+        if(keyH.dodgeRollPressed && !isRolling){
+            dodgeRollStart();
+            keyH.dodgeRollPressed = false;
+        }
+        if(isRolling){
+            System.out.println(rollCounter);
+            rollCounter --;
+            if(rollCounter <= 0){
+                dodgeRollEnd();
+            }
+        }
         if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
             if(keyH.upPressed & keyH.rightPressed) {
                 direction = "up_right";
@@ -209,5 +226,18 @@ public class Player extends Entity{
             }
             spriteCounter = 0;
         }
+    }
+    public void dodgeRollStart(){
+        isRolling = true;
+        speed = rollingSpeed;
+        diagonalSpeed = (float) (rollingSpeed/Math.sqrt(2));
+        rollCounter = rollDuration;
+    }
+
+    public void dodgeRollEnd(){
+        isRolling = false;
+        speed = normalSpeed;
+        diagonalSpeed = normalSpeed;
+
     }
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Set;
 
 
 public class TileManager {
@@ -20,6 +21,8 @@ public class TileManager {
     int tileNum;
     int screenX;
     int screenY;
+    Set<Integer> validTiles = Set.of(2,3,15,16,20);
+    Set<Integer> riverTiles = Set.of(2,3,15,16,20);
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
@@ -118,7 +121,7 @@ public class TileManager {
         }else{
             return false;
         }
-        }
+    }
 
     public static void tileAnimationLoader(int counter) {
         tileCounter++;
@@ -133,9 +136,22 @@ public class TileManager {
 
         }
     }
-    //TODO: Improve tile organisation
+
     public void animations(Graphics2D g2){
-        if (tileNum == 3) {
+        if (animationTileChecker(g2)){
+            if(riverTiles.contains(tileNum)){
+                riverAnimations(g2);
+            }/*else if(){
+
+            }*/
+
+        }else{
+            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        }
+    }
+
+    public void riverAnimations(Graphics2D g2){
+        if (tileNum == 3/*3*/) {
             switch(tileLoadNum){
                 case 1:
                     g2.drawImage(tile[4].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
@@ -172,7 +188,7 @@ public class TileManager {
                     break;
             }
         }else if(tileNum == 16) {
-            switch(tileLoadNum){
+            switch (tileLoadNum) {
                 case 1:
                     g2.drawImage(tile[24].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
                     break;
@@ -181,13 +197,14 @@ public class TileManager {
                     break;
             }
             // TODO: implement rightside river animations
-        // }else if(tileNum == 17){
-
-        } else {
-            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            // }else if(tileNum == 17){
         }
     }
-    public void riverAnimations(Graphics2D g2){
-
+    public boolean animationTileChecker(Graphics2D g2){
+        if(validTiles.contains(tileNum)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

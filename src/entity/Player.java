@@ -6,9 +6,11 @@ import main.KeyHandler;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
-// TODO: implement sprites/animations for diagonal movement
+// TODO: implement sprites/animations for diagonal movement,up,down & dodge roll7
 
 public class Player extends Entity{
 
@@ -23,6 +25,13 @@ public class Player extends Entity{
     boolean isRolling = false;
     int rollDuration = 20;
     int rollCounter = 0;
+    int spriteWidth = 32;
+    int spriteHeight = 32;
+    int spriteY = 0;
+    int spriteX = 0;
+    BufferedImage[][] sprites;
+    BufferedImage running_right;
+    int frame = 0;
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -46,136 +55,151 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage(){
+        try {
+            spriteSheetRunningRight = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_right.png")));
+            spriteSheetRunningLeft = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_left.png")));
+            spriteSheetIdleDown = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_left.png")));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        // TODO: fix problem for loading right and left walking animation without crashing
+            ocRunningLeft = spriteSheetLoader("/Test/blanc_char_running_left.png");
+            ocRunningRight = spriteSheetLoader("/Test/blanc_char_running_right.png");
+            ocIdleDown = spriteSheetLoader("/Test/blanc_char_drinking_idle_down.png");
+    }
+    public BufferedImage[] spriteSheetLoader(String path){
         try{
-            up1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_up1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_up2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_down1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_down2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_left1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_left2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_right1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_right2.png"));
-            idle_down1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_down1.png"));
-            idle_down2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_down2.png"));
-            idle_left1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_left1.png"));
-            idle_left2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_left2.png"));
-            idle_right1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_right1.png"));
-            idle_right2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_right2.png"));
-            idle_up1 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_up1.png"));
-            idle_up2 = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle_up2.png"));
-            // idle_test = ImageIO.read(getClass().getResourceAsStream("/Player/OC/2D_game_OC_idle1.png"));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(path));
+
+            int spriteSheetColumns = spriteSheet.getWidth() / spriteWidth;
+
+            BufferedImage[] sprites = new BufferedImage[spriteSheetColumns];
+            for (int i = 0; i < spriteSheetColumns; i++) {
+                sprites[i] = spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight);
+            }
+            /*BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream((path)));
+
+            int spriteSheetColumns = spriteSheet.getWidth() / spriteWidth;
+            int spriteSheetRows = spriteSheet.getHeight() / spriteHeight;
+
+            sprites = new BufferedImage[spriteSheetRows][spriteSheetColumns];
+            for (; spriteY < spriteSheetRows ;spriteY++){
+                for(; spriteX < spriteSheetColumns; spriteX++){
+                    sprites[spriteY][spriteX] = spriteSheet.getSubimage(spriteX*spriteWidth,spriteY*spriteHeight,spriteWidth,spriteHeight);
+                }
+            }*/
+            return sprites;
         }catch(IOException e){
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void update(){
-        if(keyH.dodgeRollPressed && !isRolling){
+    public void update() {
+        // use dodge roll with shift + direction key(wsad)
+        if (keyH.dodgeRollPressed && !isRolling) {
             dodgeRollStart();
             keyH.dodgeRollPressed = false;
         }
-        if(isRolling){
-            System.out.println(rollCounter);
-            rollCounter --;
-            if(rollCounter <= 0){
+        if (isRolling) {
+            //System.out.println(rollCounter);
+            rollCounter--;
+            if (rollCounter <= 0) {
                 dodgeRollEnd();
             }
         }
-        if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
-            if(keyH.upPressed & keyH.rightPressed) {
+        if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+            if (keyH.upPressed & keyH.rightPressed) {
                 direction = "up_right";
-            }else if(keyH.upPressed & keyH.leftPressed) {
+            } else if (keyH.upPressed & keyH.leftPressed) {
                 direction = "up_left";
-            }else if(keyH.downPressed & keyH.rightPressed) {
+            } else if (keyH.downPressed & keyH.rightPressed) {
                 direction = "down_right";
-            }else if(keyH.downPressed & keyH.leftPressed){
+            } else if (keyH.downPressed & keyH.leftPressed) {
                 direction = "down_left";
-            }else if (keyH.upPressed){
+            } else if (keyH.upPressed) {
                 direction = "up";
-            }else if(keyH.downPressed){
+            } else if (keyH.downPressed) {
                 direction = "down";
-            }else if(keyH.leftPressed){
+            } else if (keyH.leftPressed) {
                 direction = "left";
-            }else if(keyH.rightPressed) {
+            } else if (keyH.rightPressed) {
                 direction = "right";
             }
             collisionOn = false;
             gp.checker.checkTile(this);
 
-            if(!collisionOn){
-                switch(direction){
-                    case"up":
+            if (!collisionOn) {
+                switch (direction) {
+                    case "up":
                         worldY -= speed;
                         break;
-                    case"down":
+                    case "down":
                         worldY += speed;
                         break;
-                    case"left":
+                    case "left":
                         worldX -= speed;
                         break;
-                    case"right":
+                    case "right":
                         worldX += speed;
                         break;
-                    case"up_right":
+                    case "up_right":
                         worldY -= diagonalSpeed;
                         worldX += diagonalSpeed;
                         break;
-                    case"up_left":
+                    case "up_left":
                         worldY -= diagonalSpeed;
                         worldX -= diagonalSpeed;
                         break;
-                    case"down_right":
+                    case "down_right":
                         worldY += diagonalSpeed;
                         worldX += diagonalSpeed;
                         break;
-                    case"down_left":
+                    case "down_left":
                         worldY += diagonalSpeed;
                         worldX -= diagonalSpeed;
                         break;
                 }
             }
-            animationLoader(15);
-        }else{
-            animationLoader(40);
+            animationLoader(8, 6);
+        }else if(isRolling){
+            animationLoader(20, 6);
+         }else{
+            animationLoader(30,20);
         }
     }
     public void draw(Graphics2D g2){
 
-        //g2.setColor(Color.white);
-        //g2.fillRect(x,y,gp.tileSize,gp.tileSize); // size & position player
         BufferedImage image = null;
         if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
             switch(direction) {
                 case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
+                    if (isRolling) {
+                        //image = sheet for dodgeRoll up;
+                    }else{
+                        image = ocIdleDown[spriteNum];
+                        // image = sheet for normal running up;
                     }
                     break;
                 case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
+                    if (isRolling) {
+                        //image = sheet for dodgeRoll down;
+                    }else{
+                        // image = sheet for normal running down;
                     }
                     break;
                 case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
+                    if(isRolling){
+                        //image = sheet for dodgeRoll left;
+                    }else {
+                        image = ocRunningLeft[spriteNum];
                     }
                     break;
                 case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
+                    if(isRolling){
+                        //image = sheet for dodgeRoll right;
+                    }else {
+                        image = ocRunningRight[spriteNum];
                     }
             }
         }else {
@@ -190,12 +214,7 @@ public class Player extends Entity{
                     }
                     break;
                 case "down":
-                    if (spriteNum == 1) {
-                        image = idle_down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = idle_down2;
-                    }
+                    image = ocIdleDown[spriteNum];
                     break;
                 case "left":
                     if (spriteNum == 1) {
@@ -216,16 +235,15 @@ public class Player extends Entity{
         }
         g2.drawImage(image, screenX ,screenY ,gp.tileSize,gp.tileSize,null);
     }
-    public static void animationLoader(int counter) {
+    public static void animationLoader(int counter, int maxFrames) {
         spriteCounter++;
         if (spriteCounter > counter) {
-            if (spriteNum == 1) {
-                spriteNum = 2;
-            } else if (spriteNum == 2) {
-                spriteNum = 1;
+            spriteNum++;
+            if(spriteNum >= maxFrames){
+                spriteNum = 0;
             }
             spriteCounter = 0;
-        }
+            }
     }
     public void dodgeRollStart(){
         isRolling = true;

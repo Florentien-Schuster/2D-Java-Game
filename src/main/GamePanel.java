@@ -9,13 +9,13 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable{
     // Screen settings
     // TODO: improve resolution matching sprite size
-    final int originalTileSize = 27; // 16x16 default size of npc/map tiles etc.
+    final int originalTileSize = 32; // 32x32 default size of npc/map tiles etc.
     final int scale = 3; // scale up for tile size
-    public int tileSize = originalTileSize * scale; // 1 tile = 16x3 = 48 px on screen
-    public final int maxScreenCol = 23; // 16 tiles horizontal
-    public final int maxScreenRow = 12; // 12 tiles vertical, together ratio 4:3
-    public final int screenWidth = tileSize * maxScreenCol; // 768 px
-    public final int screenHeight = tileSize * maxScreenRow; // 576 px
+    public int tileSize = originalTileSize * scale; // 1 tile = 32x3 = 96 px on screen
+    public final int maxScreenCol = 20; // 20 tiles horizontal
+    public final int maxScreenRow = 10; // 10 tiles vertical
+    public final int screenWidth = tileSize * maxScreenCol; // 1920 px
+    public final int screenHeight = tileSize * maxScreenRow; // 960 px
 
     // World settings
     public final int maxWorldCol = 50; // 50

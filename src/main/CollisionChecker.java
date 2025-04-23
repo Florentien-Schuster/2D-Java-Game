@@ -6,6 +6,8 @@ import tile.TileManager;
 public class CollisionChecker {
     GamePanel gp;
 
+    // TODO: fix the bug that causes no collision when the player walks diagonally
+
     public CollisionChecker(GamePanel gp){
         this.gp = gp;
     }

@@ -11,7 +11,8 @@ public class Entity {
     public int speed;
     public float diagonalSpeed;
 
-    public BufferedImage up1, up2, down1, down2, left1, left2,right1 ,right2;
+    public BufferedImage spriteSheetRunningRight,spriteSheetRunningLeft,spriteSheetIdleDown;
+    public BufferedImage[] ocRunningRight,ocRunningLeft,ocIdleDown;
     public BufferedImage idle_test, idle_down1, idle_down2, idle_up1, idle_up2, idle_left1, idle_left2, idle_right1, idle_right2;
     public String direction;
     static public int spriteCounter = 0;
@@ -30,7 +31,7 @@ public class Entity {
     public double physicalDefense;
     public double magicalDefense;
     //public List<Weapon> equippedWeapons = new ArrayList<>(); // max 2 weapons equipped
-    /* Idea: weaponcombination is "class" like ranger etc and skills depend on combination */
+    /* Idea: weaponcombination is "class" like ranger etc. and skills depend on combination */
 
 
 

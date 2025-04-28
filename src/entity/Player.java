@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-// TODO: implement sprites/animations for diagonal movement,up,down & dodge roll7
+// TODO: implement sprites/animations for diagonal movement,up,down & dodge roll
 
 public class Player extends Entity{
 
@@ -27,11 +27,14 @@ public class Player extends Entity{
     int rollCounter = 0;
     int spriteWidth = 32;
     int spriteHeight = 32;
-    int spriteY = 0;
+    static int spriteNumRunning = 0;
+    static int spriteNumRolling = 0;
+    static int spriteNumIdle = 0;
+    /*int spriteY = 0;
     int spriteX = 0;
     BufferedImage[][] sprites;
     BufferedImage running_right;
-    int frame = 0;
+    int frame = 0;*/
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -40,7 +43,7 @@ public class Player extends Entity{
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
-        solidArea = new Rectangle(8,16,32,32);
+        solidArea = new Rectangle(8,64,32,32);
 
         setDefaultValues();
         getPlayerImage();
@@ -55,17 +58,13 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage(){
-        try {
-            spriteSheetRunningRight = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_right.png")));
-            spriteSheetRunningLeft = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_left.png")));
-            spriteSheetIdleDown = ImageIO.read(getClass().getResourceAsStream(("/Test/blanc_char_running_left.png")));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        // TODO: fix problem for loading right and left walking animation without crashing
             ocRunningLeft = spriteSheetLoader("/Test/blanc_char_running_left.png");
             ocRunningRight = spriteSheetLoader("/Test/blanc_char_running_right.png");
             ocIdleDown = spriteSheetLoader("/Test/blanc_char_drinking_idle_down.png");
+            ocDodgeRollRight = spriteSheetLoader("/Test/test_roll.png");
+            ocDodgeRollLeft = spriteSheetLoader("/Test/test_roll_left.png");
+            ocIdleLeft = spriteSheetLoader("/Test/idle_left.png");
+            ocIdleRight = spriteSheetLoader("/Test/idle_right.png");
     }
     public BufferedImage[] spriteSheetLoader(String path){
         try{
@@ -108,7 +107,8 @@ public class Player extends Entity{
                 dodgeRollEnd();
             }
         }
-        if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+
+        if (keyH.upPressed|| keyH.downPressed|| keyH.leftPressed|| keyH.rightPressed) {
             if (keyH.upPressed & keyH.rightPressed) {
                 direction = "up_right";
             } else if (keyH.upPressed & keyH.leftPressed) {
@@ -161,23 +161,27 @@ public class Player extends Entity{
                         break;
                 }
             }
-            animationLoader(8, 6);
-        }else if(isRolling){
-            animationLoader(20, 6);
-         }else{
-            animationLoader(30,20);
+            if (isRolling) {
+                animationLoader(3, ocDodgeRollRight.length,"rolling");
+            }else if((keyH.upPressed|| keyH.downPressed|| keyH.leftPressed|| keyH.rightPressed) && !isRolling) {
+                animationLoader(8, ocRunningRight.length, "running");
+            }
+        }
+
+        if (!keyH.upPressed && !keyH.downPressed&& !keyH.leftPressed&& !keyH.rightPressed){
+            animationLoader(20, ocIdleLeft.length, "idle");
         }
     }
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;
-        if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
+        if(keyH.upPressed|| keyH.downPressed|| keyH.leftPressed|| keyH.rightPressed){
             switch(direction) {
                 case "up":
                     if (isRolling) {
                         //image = sheet for dodgeRoll up;
                     }else{
-                        image = ocIdleDown[spriteNum];
+                        image = ocIdleDown[spriteNumIdle];
                         // image = sheet for normal running up;
                     }
                     break;
@@ -190,16 +194,19 @@ public class Player extends Entity{
                     break;
                 case "left":
                     if(isRolling){
-                        //image = sheet for dodgeRoll left;
+                        image = ocDodgeRollLeft[spriteNumRolling];
                     }else {
-                        image = ocRunningLeft[spriteNum];
+                        image = ocRunningLeft[spriteNumRunning];
                     }
                     break;
                 case "right":
-                    if(isRolling){
-                        //image = sheet for dodgeRoll right;
+                    if(isRolling || keyH.dodgeRollPressed){
+                        image = ocDodgeRollRight[spriteNumRolling];
+                        if(!isRolling){
+                            spriteNum = 0;
+                        }
                     }else {
-                        image = ocRunningRight[spriteNum];
+                        image = ocRunningRight[spriteNumRunning];
                     }
             }
         }else {
@@ -214,36 +221,42 @@ public class Player extends Entity{
                     }
                     break;
                 case "down":
-                    image = ocIdleDown[spriteNum];
+                    image = ocIdleDown[spriteNumIdle];
                     break;
                 case "left":
-                    if (spriteNum == 1) {
-                        image = idle_left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = idle_left2;
-                    }
+                    image = ocIdleLeft[spriteNumIdle];
                     break;
                 case "right":
-                    if (spriteNum == 1) {
-                        image = idle_right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = idle_right2;
-                    }
+                    image = ocIdleRight[spriteNumIdle];
             }
         }
         g2.drawImage(image, screenX ,screenY ,gp.tileSize,gp.tileSize,null);
     }
-    public static void animationLoader(int counter, int maxFrames) {
+    public static void animationLoader(int counter, int maxFrames,String type) {
         spriteCounter++;
         if (spriteCounter > counter) {
-            spriteNum++;
+            switch(type) {
+                case "rolling":
+                    spriteNumRolling++;
+                    if (spriteNumRolling >= maxFrames) spriteNumRolling = 0;
+                    break;
+                case "running":
+                    spriteNumRunning++;
+                    if (spriteNumRunning >= maxFrames) spriteNumRunning = 0;
+                    break;
+                case"idle":
+                    spriteNumIdle++;
+                    if (spriteNumIdle >= maxFrames) spriteNumIdle = 0;
+                    break;
+                default:
+                    System.out.println("No Animation loading!");
+            }
+            /*spriteNum++;
             if(spriteNum >= maxFrames){
                 spriteNum = 0;
-            }
+            }*/
             spriteCounter = 0;
-            }
+           }
     }
     public void dodgeRollStart(){
         isRolling = true;

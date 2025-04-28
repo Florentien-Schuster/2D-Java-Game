@@ -11,8 +11,7 @@ public class Entity {
     public int speed;
     public float diagonalSpeed;
 
-    public BufferedImage spriteSheetRunningRight,spriteSheetRunningLeft,spriteSheetIdleDown;
-    public BufferedImage[] ocRunningRight,ocRunningLeft,ocIdleDown;
+    public BufferedImage[] ocRunningRight,ocRunningLeft,ocIdleDown,ocDodgeRollRight,ocDodgeRollLeft,ocIdleLeft,ocIdleRight;
     public BufferedImage idle_test, idle_down1, idle_down2, idle_up1, idle_up2, idle_left1, idle_left2, idle_right1, idle_right2;
     public String direction;
     static public int spriteCounter = 0;
